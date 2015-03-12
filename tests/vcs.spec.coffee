@@ -165,10 +165,16 @@ describe 'VCS:', ->
 			.to.throw('Missing url argument')
 
 		it 'should call execute with the url', (done) ->
-			vcs.addRemote 'foo/bar', 'git@git.resin.io:jviotti/foobar.git', (error, stdout, stderr) =>
+			vcs.addRemote 'foo/bar', 'git@git.resin.io:jviotti/foobar.git', (error, remote) =>
 				expect(error).to.not.exist
 				expect(@utilsExecuteStub).to.have.been.calledOnce
 				expect(@utilsExecuteStub).to.have.been.calledWith('foo/bar', 'remote add resin git@git.resin.io:jviotti/foobar.git')
+				done()
+
+		it 'should return the remote', (done) ->
+			vcs.addRemote 'foo/bar', 'git@git.resin.io:jviotti/foobar.git', (error, remote) ->
+				expect(error).to.not.exist
+				expect(remote).to.equal('git@git.resin.io:jviotti/foobar.git')
 				done()
 
 	describe '.getApplicationId()', ->

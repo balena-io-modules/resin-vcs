@@ -50,7 +50,12 @@ exports.addRemote = function(directory, url, callback) {
   if (url == null) {
     throw new Error('Missing url argument');
   }
-  return utils.execute(directory, "remote add resin " + url, callback);
+  return utils.execute(directory, "remote add resin " + url, function(error) {
+    if (error != null) {
+      return callback(error);
+    }
+    return callback(null, url);
+  });
 };
 
 exports.getApplicationId = function(directory, callback) {

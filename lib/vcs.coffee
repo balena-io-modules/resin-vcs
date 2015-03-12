@@ -35,7 +35,9 @@ exports.addRemote = (directory, url, callback) ->
 	if not url?
 		throw new Error('Missing url argument')
 
-	utils.execute(directory, "remote add resin #{url}", callback)
+	utils.execute directory, "remote add resin #{url}", (error) ->
+		return callback(error) if error?
+		return callback(null, url)
 
 exports.getApplicationId = (directory, callback) ->
 	exports.getRemote directory, (error, remoteUrl) ->
