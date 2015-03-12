@@ -26,7 +26,7 @@ exports.getRemote = function(directory, callback) {
     if (error != null) {
       return callback(error);
     }
-    if (stderr != null) {
+    if ((stderr != null) && !_.isEmpty(stderr)) {
       return callback(new Error(stderr));
     }
     return callback(null, stdout.trim());

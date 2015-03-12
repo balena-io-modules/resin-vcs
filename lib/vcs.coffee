@@ -14,7 +14,7 @@ exports.getRemote = (directory, callback) ->
 	command = 'config --get remote.resin.url'
 	utils.execute directory, command, (error, stdout, stderr) ->
 		return callback(error) if error?
-		return callback(new Error(stderr)) if stderr?
+		return callback(new Error(stderr)) if stderr? and not _.isEmpty(stderr)
 		return callback(null, stdout.trim())
 
 exports.clone = (url, directory, callback) ->
