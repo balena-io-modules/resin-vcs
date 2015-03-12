@@ -22,24 +22,31 @@ exports.getRemoteApplicationName = function(url) {
 };
 
 exports.getApplicationIdByName = function(name, callback) {
+  var dataPrefix;
   if (name == null) {
     throw new Error('Missing name argument');
   }
   if (!_.isString(name)) {
     throw new Error("Invalid name argument: " + name);
   }
-  return resin.models.application.getAll(function(error, applications) {
-    var application;
+  dataPrefix = resin.settings.get('dataPrefix');
+  return resin.data.prefix.set(dataPrefix, function(error) {
     if (error != null) {
       return callback(error);
     }
-    application = _.find(applications, function(application) {
-      return application.app_name.toLowerCase() === name.toLowerCase();
+    return resin.models.application.getAll(function(error, applications) {
+      var application;
+      if (error != null) {
+        return callback(error);
+      }
+      application = _.find(applications, function(application) {
+        return application.app_name.toLowerCase() === name.toLowerCase();
+      });
+      if (application == null) {
+        return callback(new Error("Application not found: " + name));
+      }
+      return callback(null, application.id);
     });
-    if (application == null) {
-      return callback(new Error("Application not found: " + name));
-    }
-    return callback(null, application.id);
   });
 };
 

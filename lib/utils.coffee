@@ -25,16 +25,20 @@ exports.getApplicationIdByName = (name, callback) ->
 	if not _.isString(name)
 		throw new Error("Invalid name argument: #{name}")
 
-	resin.models.application.getAll (error, applications) ->
+	dataPrefix = resin.settings.get('dataPrefix')
+	resin.data.prefix.set dataPrefix, (error) ->
 		return callback(error) if error?
 
-		application = _.find applications, (application) ->
-			return application.app_name.toLowerCase() is name.toLowerCase()
+		resin.models.application.getAll (error, applications) ->
+			return callback(error) if error?
 
-		if not application?
-			return callback(new Error("Application not found: #{name}"))
+			application = _.find applications, (application) ->
+				return application.app_name.toLowerCase() is name.toLowerCase()
 
-		return callback(null, application.id)
+			if not application?
+				return callback(new Error("Application not found: #{name}"))
+
+			return callback(null, application.id)
 
 # TODO: Should we test this?
 exports.execute = (directory, command, callback) ->
