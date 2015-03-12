@@ -66,10 +66,10 @@ describe 'VCS:', ->
 			afterEach ->
 				@utilsExecuteStub.restore()
 
-			it 'should return the error', (done) ->
+			it 'should return a descriptive error', (done) ->
 				vcs.getRemote 'foo/bar', (error, remoteUrl) ->
 					expect(error).to.be.an.instanceof(Error)
-					expect(error.message).to.equal('execute error')
+					expect(error.message).to.equal('Couldn\'t get remote from: foo/bar')
 					expect(remoteUrl).to.not.exist
 					done()
 

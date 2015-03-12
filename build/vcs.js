@@ -24,7 +24,7 @@ exports.getRemote = function(directory, callback) {
   command = 'config --get remote.resin.url';
   return utils.execute(directory, command, function(error, stdout, stderr) {
     if (error != null) {
-      return callback(error);
+      return callback(new Error("Couldn\'t get remote from: " + directory));
     }
     if ((stderr != null) && !_.isEmpty(stderr)) {
       return callback(new Error(stderr));
