@@ -1,8 +1,10 @@
-var gitwrap, utils, _;
+var errors, gitwrap, utils, _;
 
 gitwrap = require('gitwrap');
 
 _ = require('lodash-contrib');
+
+errors = require('resin-errors');
 
 utils = require('./utils');
 
@@ -24,7 +26,7 @@ exports.getRemote = function(directory, callback) {
   command = 'config --get remote.resin.url';
   return utils.execute(directory, command, function(error, stdout, stderr) {
     if (error != null) {
-      return callback(new Error("Couldn\'t get remote from: " + directory));
+      return callback(new errors.ResinInvalidApplication(directory));
     }
     if ((stderr != null) && !_.isEmpty(stderr)) {
       return callback(new Error(stderr));
@@ -35,20 +37,20 @@ exports.getRemote = function(directory, callback) {
 
 exports.clone = function(url, directory, callback) {
   if (directory == null) {
-    throw new Error('Missing directory argument');
+    throw new errors.ResinMissingParameter('directory');
   }
   if (url == null) {
-    throw new Error('Missing url argument');
+    throw new errors.ResinMissingParameter('url');
   }
   return utils.execute(directory, "clone " + url + " . --quiet", callback);
 };
 
 exports.addRemote = function(directory, url, callback) {
   if (directory == null) {
-    throw new Error('Missing directory argument');
+    throw new errors.ResinMissingParameter('directory');
   }
   if (url == null) {
-    throw new Error('Missing url argument');
+    throw new errors.ResinMissingParameter('url');
   }
   return utils.execute(directory, "remote add resin " + url, function(error) {
     if (error != null) {
@@ -65,8 +67,7 @@ exports.getApplicationId = function(directory, callback) {
       return callback(error);
     }
     if (_.isEmpty(remoteUrl)) {
-      error = new Error("Not a resin application: " + directory);
-      return callback(error);
+      return callback(new errors.ResinInvalidApplication(directory));
     }
     applicationName = utils.getRemoteApplicationName(remoteUrl);
     return utils.getApplicationIdByName(applicationName, callback);

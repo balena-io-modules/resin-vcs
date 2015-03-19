@@ -1,18 +1,19 @@
 _ = require('lodash-contrib')
 path = require('path')
 resin = require('resin-sdk')
+errors = require('resin-errors')
 gitwrap = require('gitwrap')
 
 exports.getRemoteApplicationName = (url) ->
 
 	if not url?
-		throw new Error('Missing url argument')
+		throw new errors.ResinMissingParameter('url')
 
 	if not _.isString(url)
-		throw new Error("Invalid url argument: #{url}")
+		throw new errors.ResinInvalidParameter('url', url, 'not a string')
 
 	if _.isEmpty(url)
-		throw new Error('Invalid url argument: empty string')
+		throw new errors.ResinInvalidParameter('url', url, 'empty string')
 
 	return path.basename(url, '.git')
 
@@ -20,25 +21,21 @@ exports.getRemoteApplicationName = (url) ->
 exports.getApplicationIdByName = (name, callback) ->
 
 	if not name?
-		throw new Error('Missing name argument')
+		throw new errors.ResinMissingParameter('name')
 
 	if not _.isString(name)
-		throw new Error("Invalid name argument: #{name}")
+		throw new errors.ResinInvalidParameter('name', name, 'not a string')
 
-	dataPrefix = resin.settings.get('dataPrefix')
-	resin.data.prefix.set dataPrefix, (error) ->
+	resin.models.application.getAll (error, applications) ->
 		return callback(error) if error?
 
-		resin.models.application.getAll (error, applications) ->
-			return callback(error) if error?
+		application = _.find applications, (application) ->
+			return application.app_name.toLowerCase() is name.toLowerCase()
 
-			application = _.find applications, (application) ->
-				return application.app_name.toLowerCase() is name.toLowerCase()
+		if not application?
+			return callback(new errors.ResinApplicationNotFound(name))
 
-			if not application?
-				return callback(new Error("Application not found: #{name}"))
-
-			return callback(null, application.id)
+		return callback(null, application.id)
 
 # TODO: Should we test this?
 exports.execute = (directory, command, callback) ->
