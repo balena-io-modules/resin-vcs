@@ -79,6 +79,13 @@ Support
 
 If you're having any problem, please [raise an issue](https://github.com/resin-io/resin-vcs/issues/new) on GitHub.
 
+ChangeLog
+---------
+
+### v1.1.0
+
+- Make use of [resin-errors](https://github.com/resin-io/resin-errors).
+
 License
 -------
 
