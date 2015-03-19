@@ -69,7 +69,7 @@ describe 'VCS:', ->
 			it 'should return a descriptive error', (done) ->
 				vcs.getRemote 'foo/bar', (error, remoteUrl) ->
 					expect(error).to.be.an.instanceof(Error)
-					expect(error.message).to.equal('Couldn\'t get remote from: foo/bar')
+					expect(error.message).to.equal('Invalid application: foo/bar')
 					expect(remoteUrl).to.not.exist
 					done()
 
@@ -131,12 +131,12 @@ describe 'VCS:', ->
 		it 'should throw an error if no directory', ->
 			expect ->
 				vcs.clone('git@git.resin.io:jviotti/foobar.git', null, _.noop)
-			.to.throw('Missing directory argument')
+			.to.throw('Missing parameter: directory')
 
 		it 'should throw an error if no url', ->
 			expect ->
 				vcs.clone(null, 'foo/bar', _.noop)
-			.to.throw('Missing url argument')
+			.to.throw('Missing parameter: url')
 
 		it 'should call execute with the url', (done) ->
 			vcs.clone 'git@git.resin.io:jviotti/foobar.git', 'foo/bar', (error, stdout, stderr) =>
@@ -157,12 +157,12 @@ describe 'VCS:', ->
 		it 'should throw an error if no directory', ->
 			expect ->
 				vcs.addRemote(null, 'git@git.resin.io:jviotti/foobar.git', _.noop)
-			.to.throw('Missing directory argument')
+			.to.throw('Missing parameter: directory')
 
 		it 'should throw an error if no url', ->
 			expect ->
 				vcs.addRemote('foo/bar', null, _.noop)
-			.to.throw('Missing url argument')
+			.to.throw('Missing parameter: url')
 
 		it 'should call execute with the url', (done) ->
 			vcs.addRemote 'foo/bar', 'git@git.resin.io:jviotti/foobar.git', (error, remote) =>
@@ -220,6 +220,6 @@ describe 'VCS:', ->
 			it 'should return an error', (done) ->
 				vcs.getApplicationId 'foo/bar', (error, id) ->
 					expect(error).to.be.an.instanceof(Error)
-					expect(error.message).to.equal('Not a resin application: foo/bar')
+					expect(error.message).to.equal('Invalid application: foo/bar')
 					expect(id).to.not.exist
 					done()

@@ -1,4 +1,4 @@
-var gitwrap, path, resin, _;
+var errors, gitwrap, path, resin, _;
 
 _ = require('lodash-contrib');
 
@@ -6,47 +6,42 @@ path = require('path');
 
 resin = require('resin-sdk');
 
+errors = require('resin-errors');
+
 gitwrap = require('gitwrap');
 
 exports.getRemoteApplicationName = function(url) {
   if (url == null) {
-    throw new Error('Missing url argument');
+    throw new errors.ResinMissingParameter('url');
   }
   if (!_.isString(url)) {
-    throw new Error("Invalid url argument: " + url);
+    throw new errors.ResinInvalidParameter('url', url, 'not a string');
   }
   if (_.isEmpty(url)) {
-    throw new Error('Invalid url argument: empty string');
+    throw new errors.ResinInvalidParameter('url', url, 'empty string');
   }
   return path.basename(url, '.git');
 };
 
 exports.getApplicationIdByName = function(name, callback) {
-  var dataPrefix;
   if (name == null) {
-    throw new Error('Missing name argument');
+    throw new errors.ResinMissingParameter('name');
   }
   if (!_.isString(name)) {
-    throw new Error("Invalid name argument: " + name);
+    throw new errors.ResinInvalidParameter('name', name, 'not a string');
   }
-  dataPrefix = resin.settings.get('dataPrefix');
-  return resin.data.prefix.set(dataPrefix, function(error) {
+  return resin.models.application.getAll(function(error, applications) {
+    var application;
     if (error != null) {
       return callback(error);
     }
-    return resin.models.application.getAll(function(error, applications) {
-      var application;
-      if (error != null) {
-        return callback(error);
-      }
-      application = _.find(applications, function(application) {
-        return application.app_name.toLowerCase() === name.toLowerCase();
-      });
-      if (application == null) {
-        return callback(new Error("Application not found: " + name));
-      }
-      return callback(null, application.id);
+    application = _.find(applications, function(application) {
+      return application.app_name.toLowerCase() === name.toLowerCase();
     });
+    if (application == null) {
+      return callback(new errors.ResinApplicationNotFound(name));
+    }
+    return callback(null, application.id);
   });
 };
 

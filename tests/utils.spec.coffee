@@ -13,17 +13,17 @@ describe 'Utils:', ->
 		it 'should throw an error if no url', ->
 			expect ->
 				utils.getRemoteApplicationName()
-			.to.throw('Missing url argument')
+			.to.throw('Missing parameter: url')
 
 		it 'should throw an error if url is not a string', ->
 			expect ->
 				utils.getRemoteApplicationName(123)
-			.to.throw('Invalid url argument: 123')
+			.to.throw('Invalid parameter url: 123. not a string')
 
 		it 'should throw an error if url is an empty string', ->
 			expect ->
 				utils.getRemoteApplicationName('')
-			.to.throw('Invalid url argument: empty string')
+			.to.throw('Invalid parameter url: . empty string')
 
 		it 'should get the application name from a remote', ->
 			url = 'git@git.resin.io:jviotti/foobar.git'
@@ -46,12 +46,12 @@ describe 'Utils:', ->
 		it 'should throw an error if no name', ->
 			expect ->
 				utils.getApplicationIdByName(null, _.noop)
-			.to.throw('Missing name argument')
+			.to.throw('Missing parameter: name')
 
 		it 'should throw an error if name is not a string', ->
 			expect ->
 				utils.getApplicationIdByName(123, _.noop)
-			.to.throw('Invalid name argument: 123')
+			.to.throw('Invalid parameter name: 123. not a string')
 
 		describe 'given the user has the application with other case setting', ->
 

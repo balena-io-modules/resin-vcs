@@ -1,5 +1,6 @@
 gitwrap = require('gitwrap')
 _ = require('lodash-contrib')
+errors = require('resin-errors')
 utils = require('./utils')
 
 exports.isRepository = (directory, callback) ->
@@ -15,7 +16,7 @@ exports.getRemote = (directory, callback) ->
 	utils.execute directory, command, (error, stdout, stderr) ->
 
 		if error?
-			return callback(new Error("Couldn\'t get remote from: #{directory}"))
+			return callback(new errors.ResinInvalidApplication(directory))
 
 		return callback(new Error(stderr)) if stderr? and not _.isEmpty(stderr)
 		return callback(null, stdout.trim())
@@ -23,20 +24,20 @@ exports.getRemote = (directory, callback) ->
 exports.clone = (url, directory, callback) ->
 
 	if not directory?
-		throw new Error('Missing directory argument')
+		throw new errors.ResinMissingParameter('directory')
 
 	if not url?
-		throw new Error('Missing url argument')
+		throw new errors.ResinMissingParameter('url')
 
 	utils.execute(directory, "clone #{url} . --quiet", callback)
 
 exports.addRemote = (directory, url, callback) ->
 
 	if not directory?
-		throw new Error('Missing directory argument')
+		throw new errors.ResinMissingParameter('directory')
 
 	if not url?
-		throw new Error('Missing url argument')
+		throw new errors.ResinMissingParameter('url')
 
 	utils.execute directory, "remote add resin #{url}", (error) ->
 		return callback(error) if error?
@@ -47,8 +48,7 @@ exports.getApplicationId = (directory, callback) ->
 		return callback(error) if error?
 
 		if _.isEmpty(remoteUrl)
-			error = new Error("Not a resin application: #{directory}")
-			return callback(error)
+			return callback(new errors.ResinInvalidApplication(directory))
 
 		applicationName = utils.getRemoteApplicationName(remoteUrl)
 		utils.getApplicationIdByName(applicationName, callback)
