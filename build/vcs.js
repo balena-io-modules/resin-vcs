@@ -60,16 +60,23 @@ exports.addRemote = function(directory, url, callback) {
   });
 };
 
-exports.getApplicationId = function(directory, callback) {
+exports.getApplicationName = function(directory, callback) {
   return exports.getRemote(directory, function(error, remoteUrl) {
-    var applicationName;
     if (error != null) {
       return callback(error);
     }
     if (_.isEmpty(remoteUrl)) {
       return callback(new errors.ResinInvalidApplication(directory));
     }
-    applicationName = utils.getRemoteApplicationName(remoteUrl);
-    return utils.getApplicationIdByName(applicationName, callback);
+    return callback(null, utils.getRemoteApplicationName(remoteUrl));
+  });
+};
+
+exports.getApplicationId = function(directory, callback) {
+  return exports.getApplicationName(directory, function(error, name) {
+    if (error != null) {
+      return callback(error);
+    }
+    return utils.getApplicationIdByName(name, callback);
   });
 };

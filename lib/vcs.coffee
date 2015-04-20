@@ -43,12 +43,16 @@ exports.addRemote = (directory, url, callback) ->
 		return callback(error) if error?
 		return callback(null, url)
 
-exports.getApplicationId = (directory, callback) ->
+exports.getApplicationName = (directory, callback) ->
 	exports.getRemote directory, (error, remoteUrl) ->
 		return callback(error) if error?
 
 		if _.isEmpty(remoteUrl)
 			return callback(new errors.ResinInvalidApplication(directory))
 
-		applicationName = utils.getRemoteApplicationName(remoteUrl)
-		utils.getApplicationIdByName(applicationName, callback)
+		return callback(null, utils.getRemoteApplicationName(remoteUrl))
+
+exports.getApplicationId = (directory, callback) ->
+	exports.getApplicationName directory, (error, name) ->
+		return callback(error) if error?
+		utils.getApplicationIdByName(name, callback)
