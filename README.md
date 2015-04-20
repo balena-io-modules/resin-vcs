@@ -49,6 +49,10 @@ The callback gets passed `(Error error, String remote)`.
 
 Clone a remote to a certain directory.
 
+#### vcs.getApplicationName(String path, Function callback)
+
+If the directory is a resin application, get the application name associated to that application.
+
 #### vcs.getApplicationId(String path, Function callback)
 
 If the directory is a resin application, get the id associated to that application.

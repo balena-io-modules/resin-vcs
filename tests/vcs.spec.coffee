@@ -177,6 +177,44 @@ describe 'VCS:', ->
 				expect(remote).to.equal('git@git.resin.io:jviotti/foobar.git')
 				done()
 
+	describe '.getApplicationName()', ->
+
+		it 'should throw an error if no directory', ->
+			expect ->
+				vcs.getApplicationName(null, _.noop)
+			.to.throw('Missing directory')
+
+		describe 'if the remote was found', ->
+
+			beforeEach ->
+				@vcsGetRemoteStub = sinon.stub(vcs, 'getRemote')
+				@vcsGetRemoteStub.yields(null, 'git@git.resin.io:jviotti/foobar.git')
+
+			afterEach ->
+				@vcsGetRemoteStub.restore()
+
+			it 'should return the correct name', (done) ->
+				vcs.getApplicationName 'foo/bar', (error, name) ->
+					expect(error).to.not.exist
+					expect(name).to.equal('foobar')
+					done()
+
+		describe 'if the remote was not found', ->
+
+			beforeEach ->
+				@vcsGetRemoteStub = sinon.stub(vcs, 'getRemote')
+				@vcsGetRemoteStub.yields(null, '')
+
+			afterEach ->
+				@vcsGetRemoteStub.restore()
+
+			it 'should return an error', (done) ->
+				vcs.getApplicationName 'foo/bar', (error, name) ->
+					expect(error).to.be.an.instanceof(Error)
+					expect(error.message).to.equal('Invalid application: foo/bar')
+					expect(name).to.not.exist
+					done()
+
 	describe '.getApplicationId()', ->
 
 		it 'should throw an error if no directory', ->
