@@ -86,6 +86,11 @@ If you're having any problem, please [raise an issue](https://github.com/resin-i
 ChangeLog
 ---------
 
+### v1.2.0
+
+- Implement `vcs.getApplicationName()`.
+- Fix Hound CI rules to match coffeelint.
+
 ### v1.1.0
 
 - Make use of [resin-errors](https://github.com/resin-io/resin-errors).
