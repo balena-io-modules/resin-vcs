@@ -4,6 +4,7 @@ resin-vcs
 [![npm version](https://badge.fury.io/js/resin-vcs.svg)](http://badge.fury.io/js/resin-vcs)
 [![dependencies](https://david-dm.org/resin-io/resin-vcs.png)](https://david-dm.org/resin-io/resin-vcs.png)
 [![Build Status](https://travis-ci.org/resin-io/resin-vcs.svg?branch=master)](https://travis-ci.org/resin-io/resin-vcs)
+[![Build status](https://ci.appveyor.com/api/projects/status/o7lf4il899x1iib2?svg=true)](https://ci.appveyor.com/project/jviotti/resin-vcs)
 
 A layer between Resin.io and VCS.
 
