@@ -22,6 +22,44 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 ###
 
-# Default to git. This should be controlled
-# by resin-settings-client in the future
-module.exports = require('./systems/git')
+_ = require('lodash')
+Promise = require('bluebird')
+gitwrap = require('gitwrap')
+
+###*
+# @summary Execute a git command
+# @function
+# @protected
+#
+# @param {String} directory - directory
+# @param {String} command - git command, omitting "git"
+#
+# @returns {Promise<String|undefined>} output
+#
+# @example
+# utils.execute('foo/bar', 'log --pretty=oneline -1').then (output) ->
+# 	if output?
+# 		console.log(output)
+###
+exports.execute = (directory, command) ->
+	Promise.fromNode (callback) ->
+		gitwrap.create(directory).execute command, (error, stdout, stderr) ->
+			return callback(error) if error?
+			return callback(new Error(stderr.trim())) if not _.isEmpty(stderr)
+			return callback(null, stdout.trim() or undefined)
+
+###*
+# @summary Get git resin remote from a repository
+# @function
+# @protected
+#
+# @param {String} directory - directory
+# @returns {Promise<String|undefined>} resin remote
+#
+# @example
+# utils.getRemote('foo/bar').then (remote) ->
+# 	if remote?
+# 		console.log(remote)
+###
+exports.getRemote = (directory) ->
+	exports.execute(directory, 'config --get remote.resin.url')

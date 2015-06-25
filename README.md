@@ -8,9 +8,15 @@ resin-vcs
 
 A layer between Resin.io and VCS.
 
-It provides functionality to interact with versioning control resin applications repositories.
+Role
+----
 
-It supports only Git for now, but it might support other technologies in the future as well.
+The intention of this module is to provide an extensible layer between Resin.io and version control systems, such as [git](http://git-scm.com).
+
+Systems
+-------
+
+Currently this module only supports [git](http://git-scm.com), but will be extended in the future.
 
 Installation
 ------------
@@ -24,39 +30,79 @@ $ npm install --save resin-vcs
 Documentation
 -------------
 
-#### vcs.isRepository(String path, Function callback)
 
-Check that a certain directory is a repository.
+* [vcs](#module_vcs)
+  * [.initialize(directory)](#module_vcs.initialize) ⇒ <code>Promise</code>
+  * [.clone(url, directory)](#module_vcs.clone) ⇒ <code>Promise</code>
+  * [.associate(directory, url)](#module_vcs.associate) ⇒ <code>Promise</code>
+  * [.getApplicationName(directory)](#module_vcs.getApplicationName) ⇒ <code>Promise.&lt;(String\|undefined)&gt;</code>
 
-The callback gets passed `(Boolean isRepository)`.
+<a name="module_vcs.initialize"></a>
+### vcs.initialize(directory) ⇒ <code>Promise</code>
+**Kind**: static method of <code>[vcs](#module_vcs)</code>  
+**Summary**: Initialize a directory with git  
+**Access:** public  
 
-#### vcs.initialize(String path, Function callback)
+| Param | Type | Description |
+| --- | --- | --- |
+| directory | <code>String</code> | directory |
 
-Initialize a directory as a repository. If the directory is already a repository, this function doesn't do anything.
+**Example**  
+```js
+vcs.initialize('foo/bar')
+```
+<a name="module_vcs.clone"></a>
+### vcs.clone(url, directory) ⇒ <code>Promise</code>
+**Kind**: static method of <code>[vcs](#module_vcs)</code>  
+**Summary**: Clone a git repository to a directory  
+**Access:** public  
 
-The callback gets passed `(Error error)`.
+| Param | Type | Description |
+| --- | --- | --- |
+| url | <code>String</code> | repository url |
+| directory | <code>String</code> | directory |
 
-#### vcs.getRemote(String path, Function callback)
+**Example**  
+```js
+vcs.clone('https://github.com/resin-io/resin-vcs.git', 'foo/bar')
+```
+<a name="module_vcs.associate"></a>
+### vcs.associate(directory, url) ⇒ <code>Promise</code>
+**Kind**: static method of <code>[vcs](#module_vcs)</code>  
+**Summary**: Add a resin remote to a git repository  
+**Access:** public  
 
-Get the resin remote of a certain directory.
+| Param | Type | Description |
+| --- | --- | --- |
+| directory | <code>String</code> | directory |
+| url | <code>String</code> | repository url |
 
-#### vcs.addRemote(String path, String remote, Function callback)
+**Example**  
+```js
+vcs.associate('foo/bar', 'jviotti@git.resin.io:jviotti/foobar.git')
+```
+<a name="module_vcs.getApplicationName"></a>
+### vcs.getApplicationName(directory) ⇒ <code>Promise.&lt;(String\|undefined)&gt;</code>
+**Kind**: static method of <code>[vcs](#module_vcs)</code>  
+**Summary**: Get the associated application name from a repository  
+**Returns**: <code>Promise.&lt;(String\|undefined)&gt;</code> - application name  
+**Access:** public  
 
-Add a resin remote to a directory.
+| Param | Type | Description |
+| --- | --- | --- |
+| directory | <code>String</code> | directory |
 
-The callback gets passed `(Error error, String remote)`.
+**Example**  
+```js
+vcs.getApplicationName('foo/bar').then (applicationName) ->
+	if applicationName?
+		console.log(applicationName)
+```
 
-#### vcs.clone(String remote, String path, Function callback)
+Support
+-------
 
-Clone a remote to a certain directory.
-
-#### vcs.getApplicationName(String path, Function callback)
-
-If the directory is a resin application, get the application name associated to that application.
-
-#### vcs.getApplicationId(String path, Function callback)
-
-If the directory is a resin application, get the id associated to that application.
+If you're having any problem, please [raise an issue](https://github.com/resin-io/resin-vcs/issues/new) on GitHub and the Resin.io team will be happy to help.
 
 Tests
 -----
@@ -78,23 +124,6 @@ Before submitting a PR, please make sure that you include tests, and that [coffe
 ```sh
 $ gulp lint
 ```
-
-Support
--------
-
-If you're having any problem, please [raise an issue](https://github.com/resin-io/resin-vcs/issues/new) on GitHub.
-
-ChangeLog
----------
-
-### v1.2.0
-
-- Implement `vcs.getApplicationName()`.
-- Fix Hound CI rules to match coffeelint.
-
-### v1.1.0
-
-- Make use of [resin-errors](https://github.com/resin-io/resin-errors).
 
 License
 -------

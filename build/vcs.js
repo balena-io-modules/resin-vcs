@@ -1,82 +1,25 @@
-var errors, gitwrap, utils, _;
 
-gitwrap = require('gitwrap');
+/*
+The MIT License
 
-_ = require('lodash-contrib');
+Copyright (c) 2015 Resin.io, Inc. https://resin.io.
 
-errors = require('resin-errors');
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
 
-utils = require('./utils');
+The above copyright notice and this permission notice shall be included in
+all copies or substantial portions of the Software.
 
-exports.isRepository = function(directory, callback) {
-  return gitwrap.create(directory).isGitRepository(callback);
-};
-
-exports.initialize = function(directory, callback) {
-  return exports.isRepository(directory, function(isRepository) {
-    if (isRepository) {
-      return callback();
-    }
-    return utils.execute(directory, 'init', _.unary(callback));
-  });
-};
-
-exports.getRemote = function(directory, callback) {
-  var command;
-  command = 'config --get remote.resin.url';
-  return utils.execute(directory, command, function(error, stdout, stderr) {
-    if (error != null) {
-      return callback(new errors.ResinInvalidApplication(directory));
-    }
-    if ((stderr != null) && !_.isEmpty(stderr)) {
-      return callback(new Error(stderr));
-    }
-    return callback(null, stdout.trim());
-  });
-};
-
-exports.clone = function(url, directory, callback) {
-  if (directory == null) {
-    throw new errors.ResinMissingParameter('directory');
-  }
-  if (url == null) {
-    throw new errors.ResinMissingParameter('url');
-  }
-  return utils.execute(directory, "clone " + url + " . --quiet", callback);
-};
-
-exports.addRemote = function(directory, url, callback) {
-  if (directory == null) {
-    throw new errors.ResinMissingParameter('directory');
-  }
-  if (url == null) {
-    throw new errors.ResinMissingParameter('url');
-  }
-  return utils.execute(directory, "remote add resin " + url, function(error) {
-    if (error != null) {
-      return callback(error);
-    }
-    return callback(null, url);
-  });
-};
-
-exports.getApplicationName = function(directory, callback) {
-  return exports.getRemote(directory, function(error, remoteUrl) {
-    if (error != null) {
-      return callback(error);
-    }
-    if (_.isEmpty(remoteUrl)) {
-      return callback(new errors.ResinInvalidApplication(directory));
-    }
-    return callback(null, utils.getRemoteApplicationName(remoteUrl));
-  });
-};
-
-exports.getApplicationId = function(directory, callback) {
-  return exports.getApplicationName(directory, function(error, name) {
-    if (error != null) {
-      return callback(error);
-    }
-    return utils.getApplicationIdByName(name, callback);
-  });
-};
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+THE SOFTWARE.
+ */
+module.exports = require('./systems/git');
