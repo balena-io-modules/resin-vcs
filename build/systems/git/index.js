@@ -82,7 +82,12 @@ exports.clone = function(url, directory) {
  */
 
 exports.associate = function(directory, url) {
-  return utils.execute(directory, "remote add resin " + url);
+  return utils.isGitRepository(directory).then(function(isGitRepository) {
+    if (!isGitRepository) {
+      throw new Error("Not a git repository: " + directory);
+    }
+    return utils.execute(directory, "remote add resin " + url);
+  });
 };
 
 
@@ -101,10 +106,15 @@ exports.associate = function(directory, url) {
  */
 
 exports.getApplicationName = function(directory) {
-  return utils.getRemote(directory).then(function(remoteUrl) {
-    if (remoteUrl == null) {
-      return;
+  return utils.isGitRepository(directory).then(function(isGitRepository) {
+    if (!isGitRepository) {
+      throw new Error("Not a git repository: " + directory);
     }
-    return path.basename(remoteUrl, '.git');
+    return utils.getRemote(directory).then(function(remoteUrl) {
+      if (remoteUrl == null) {
+        return;
+      }
+      return path.basename(remoteUrl, '.git');
+    });
   });
 };

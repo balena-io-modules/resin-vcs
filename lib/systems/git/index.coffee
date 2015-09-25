@@ -71,7 +71,11 @@ exports.clone = (url, directory) ->
 # vcs.associate('foo/bar', 'jviotti@git.resin.io:jviotti/foobar.git')
 ###
 exports.associate = (directory, url) ->
-	utils.execute(directory, "remote add resin #{url}")
+	utils.isGitRepository(directory).then (isGitRepository) ->
+		if not isGitRepository
+			throw new Error("Not a git repository: #{directory}")
+
+		utils.execute(directory, "remote add resin #{url}")
 
 ###*
 # @summary Get the associated application name from a repository
@@ -87,6 +91,10 @@ exports.associate = (directory, url) ->
 # 		console.log(applicationName)
 ###
 exports.getApplicationName = (directory) ->
-	utils.getRemote(directory).then (remoteUrl) ->
-		return if not remoteUrl?
-		return path.basename(remoteUrl, '.git')
+	utils.isGitRepository(directory).then (isGitRepository) ->
+		if not isGitRepository
+			throw new Error("Not a git repository: #{directory}")
+
+		utils.getRemote(directory).then (remoteUrl) ->
+			return if not remoteUrl?
+			return path.basename(remoteUrl, '.git')

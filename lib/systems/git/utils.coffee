@@ -49,6 +49,24 @@ exports.execute = (directory, command) ->
 			return callback(null, stdout.trim() or undefined)
 
 ###*
+# @summary Check if a directory is a git repository
+# @function
+# @protected
+#
+# @param {String} directory - directory
+# @returns {Promise<Boolean>} is a git repository
+#
+# @example
+# utils.isGitRepository('foo/bar').then (isGitRepository) ->
+# 	if isGitRepository
+# 		console.log('Is is a git repository')
+###
+exports.isGitRepository = (directory) ->
+	Promise.fromNode (callback) ->
+		gitwrap.create(directory).isGitRepository (isGitRepository) ->
+			return callback(null, isGitRepository)
+
+###*
 # @summary Get git resin remote from a repository
 # @function
 # @protected
