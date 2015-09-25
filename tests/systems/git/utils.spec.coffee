@@ -95,3 +95,35 @@ describe 'Utils:', ->
 			it 'should be rejected with the error message', ->
 				promise = utils.execute('foo/bar', 'command')
 				m.chai.expect(promise).to.be.rejectedWith('git error')
+
+	describe '.isGitRepository()', ->
+
+		describe 'given the directory is a git repository', ->
+
+			beforeEach ->
+				@gitwrapCreateStub = m.sinon.stub(gitwrap, 'create')
+				@gitwrapCreateStub.returns
+					isGitRepository: (callback) ->
+						return callback(true)
+
+			afterEach ->
+				@gitwrapCreateStub.restore()
+
+			it 'should eventually equal true', ->
+				promise = utils.isGitRepository('foo/bar')
+				m.chai.expect(promise).to.eventually.be.true
+
+		describe 'given the directory is not a git repository', ->
+
+			beforeEach ->
+				@gitwrapCreateStub = m.sinon.stub(gitwrap, 'create')
+				@gitwrapCreateStub.returns
+					isGitRepository: (callback) ->
+						return callback(false)
+
+			afterEach ->
+				@gitwrapCreateStub.restore()
+
+			it 'should eventually equal false', ->
+				promise = utils.isGitRepository('foo/bar')
+				m.chai.expect(promise).to.eventually.be.false
