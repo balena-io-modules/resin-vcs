@@ -1,6 +1,6 @@
 {
   "name": "resin-vcs",
-  "version": "2.0.1",
+  "version": "2.0.2",
   "description": "Resin Version Control System utilities",
   "main": "build/vcs.js",
   "homepage": "https://github.com/resin-io/resin-vcs",

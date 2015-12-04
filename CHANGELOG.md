@@ -3,6 +3,12 @@
 All notable changes to this project will be documented in this file.
 This project adheres to [Semantic Versioning](http://semver.org/).
 
+## [2.0.2] - 2015-12-04
+
+### Changed
+
+- Omit tests in NPM package.
+
 ## [2.0.1] - 2015-09-25
 
 ### Changed
@@ -38,6 +44,7 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 
 - Make use of [resin-errors](https://github.com/resin-io/resin-errors).
 
+[2.0.2]: https://github.com/resin-io/resin-vcs/compare/v2.0.1...v2.0.2
 [2.0.1]: https://github.com/resin-io/resin-vcs/compare/v2.0.0...v2.0.1
 [2.0.0]: https://github.com/resin-io/resin-vcs/compare/v1.2.0...v2.0.0
 [1.2.0]: https://github.com/resin-io/resin-vcs/compare/v1.1.0...v1.2.0
