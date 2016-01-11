@@ -6,6 +6,8 @@ resin-vcs
 [![Build Status](https://travis-ci.org/resin-io/resin-vcs.svg?branch=master)](https://travis-ci.org/resin-io/resin-vcs)
 [![Build status](https://ci.appveyor.com/api/projects/status/o7lf4il899x1iib2?svg=true)](https://ci.appveyor.com/project/jviotti/resin-vcs)
 
+Join our online chat at [![Gitter chat](https://badges.gitter.im/resin-io/chat.png)](https://gitter.im/resin-io/chat)
+
 A layer between Resin.io and VCS.
 
 Role
